@@ -49,6 +49,7 @@ dependencies:
   animate_do: ^4.2.0
   fl_chart:
   month_picker_dialog:
+  timezone:
 
 dev_dependencies:
   flutter_test:

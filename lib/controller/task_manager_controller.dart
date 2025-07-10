@@ -7,6 +7,7 @@ import '../models/task_manager_model.dart';
 class TaskManagerController extends GetxController {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  var incompleteTasksCount = <String, int>{}.obs;
 
   var taskManagers = <TaskManagerModel>[].obs;
 
@@ -28,10 +29,13 @@ class TaskManagerController extends GetxController {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((snapshot) {
-      taskManagers.value = snapshot.docs.map((doc) {
-        return TaskManagerModel.fromMap(doc.id, doc.data());
-      }).toList();
-    });
+          taskManagers.value =
+              snapshot.docs.map((doc) {
+                final manager = TaskManagerModel.fromMap(doc.id, doc.data());
+                listenToIncompleteTasks(manager.id);
+                return manager;
+              }).toList();
+        });
   }
 
   Future<void> addTaskManager(TaskManagerModel manager) async {
@@ -101,5 +105,23 @@ class TaskManagerController extends GetxController {
         .collection('taskManagers')
         .doc(managerId)
         .delete();
+  }
+
+  void listenToIncompleteTasks(String managerId) {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('taskManagers')
+        .doc(managerId)
+        .collection('tasks')
+        .where('completed', isEqualTo: false)
+        .snapshots()
+        .listen((snapshot) {
+          incompleteTasksCount[managerId] = snapshot.docs.length;
+          incompleteTasksCount.refresh();
+        });
   }
 }

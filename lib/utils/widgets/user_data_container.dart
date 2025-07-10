@@ -17,10 +17,11 @@ class _UserDataContainerState extends State<UserDataContainer> {
   Future<void> getUserData() async {
     try {
       String userUID = FirebaseAuth.instance.currentUser!.uid;
-      DocumentSnapshot userDataSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userUID)
-          .get();
+      DocumentSnapshot userDataSnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userUID)
+              .get();
       setState(() {
         userData = userDataSnapshot.data() as Map<String, dynamic>;
       });
@@ -77,8 +78,11 @@ class _UserDataContainerState extends State<UserDataContainer> {
           ),
           Stack(
             children: [
-              const Icon(Icons.notifications_none_rounded,
-                  color: Colors.white, size: 30),
+              const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.white,
+                size: 30,
+              ),
               Positioned(
                 right: 0,
                 top: 2,
@@ -90,7 +94,7 @@ class _UserDataContainerState extends State<UserDataContainer> {
                     shape: BoxShape.circle,
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ],
@@ -98,9 +102,3 @@ class _UserDataContainerState extends State<UserDataContainer> {
     );
   }
 }
-
-
-
-
-
-

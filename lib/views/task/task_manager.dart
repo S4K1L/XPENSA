@@ -31,35 +31,40 @@ class TaskManagersPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Obx(
-        () =>
-            controller.taskManagers.isEmpty
-                ? const Center(
-                  child: Text(
-                    "No task managers yet.",
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
+      body: RefreshIndicator(
+        onRefresh: () async => controller.fetchTaskManagers(),
+        child: Obx(
+          () =>
+              controller.taskManagers.isEmpty
+                  ? const Center(
+                    child: Text(
+                      "No task managers yet.",
+                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                    ),
+                  )
+                  : ListView.builder(
+                    itemCount: controller.taskManagers.length,
+                    itemBuilder: (context, index) {
+                      final manager = controller.taskManagers[index];
+                      return BounceInRight(
+                        child: TaskManagerTile(
+                          manager: manager,
+                          onTap: () {
+                            Get.to(
+                              () => TaskListPage(manager: manager),
+                              transition: Transition.rightToLeft,
+                            );
+                          },
+                          onMorePressed: () {
+                            _showTaskManagerOptions(manager);
+                          },
+                          incompleteCount:
+                              controller.incompleteTasksCount[manager.id] ?? 0,
+                        ),
+                      );
+                    },
                   ),
-                )
-                : ListView.builder(
-                  itemCount: controller.taskManagers.length,
-                  itemBuilder: (context, index) {
-                    final manager = controller.taskManagers[index];
-                    return BounceInRight(
-                      child: TaskManagerTile(
-                        manager: manager,
-                        onTap: () {
-                          Get.to(
-                            () => TaskListPage(manager: manager),
-                            transition: Transition.rightToLeft,
-                          );
-                        },
-                        onMorePressed: () {
-                          _showTaskManagerOptions(manager);
-                        },
-                      ),
-                    );
-                  },
-                ),
+        ),
       ),
     );
   }

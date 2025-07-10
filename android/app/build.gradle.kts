@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.s4k1l.xpensa"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -45,3 +45,4 @@ android {
 flutter {
     source = "../.."
 }
+

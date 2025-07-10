@@ -1,3 +1,4 @@
+import 'package:xpensa/services/notification_service.dart';
 import 'package:xpensa/utils/Theme/color_theme.dart';
 import 'package:xpensa/views/Authentication/AuthGate/authGate.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,6 +9,7 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await NotificationService.init();
   runApp(const MyApp());
 }
 
