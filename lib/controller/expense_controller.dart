@@ -22,13 +22,13 @@ class ExpenseController extends GetxController {
     'Others': Colors.deepOrangeAccent,
   };
 
-  RxString selectedCategory = ''.obs;
+  RxString selectedCategory = 'All'.obs;
   RxList<String> categories = <String>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    categories.value = categoryIcons.keys.toList();
+    categories.value = ['All', ...categoryIcons.keys];
   }
 
   Stream<List<Expense>> fetchExpenses() {
@@ -38,58 +38,57 @@ class ExpenseController extends GetxController {
         .doc(userUID)
         .collection('expenses');
 
-    if (selectedCategory.value.isEmpty) {
+    // Show all if "All" or empty is selected
+    if (selectedCategory.value == 'All' || selectedCategory.value.isEmpty) {
       return expensesCollection
           .orderBy('timestamp', descending: true)
           .snapshots()
           .map((snapshot) {
-            return snapshot.docs
-                .map((doc) => Expense.fromMap(doc.data(), doc.id))
-                .toList();
-          });
+        return snapshot.docs
+            .map((doc) => Expense.fromMap(doc.data(), doc.id))
+            .toList();
+      });
     } else {
       return expensesCollection
           .where('category', isEqualTo: selectedCategory.value)
           .orderBy('timestamp', descending: true)
           .snapshots()
           .map((snapshot) {
-            return snapshot.docs
-                .map((doc) => Expense.fromMap(doc.data(), doc.id))
-                .toList();
-          });
+        return snapshot.docs
+            .map((doc) => Expense.fromMap(doc.data(), doc.id))
+            .toList();
+      });
     }
   }
 
   void showCategorySelection(BuildContext context) {
     showCupertinoModalPopup(
       context: context,
-      builder:
-          (context) => Container(
-            height: 250,
-            color: Colors.white,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Obx(
+      builder: (context) => Container(
+        height: 250,
+        color: Colors.white,
+        child: Column(
+          children: [
+            Expanded(
+              child: Obx(
                     () => CupertinoPicker(
-                      itemExtent: 36.0,
-                      onSelectedItemChanged: (int index) {
-                        selectedCategory.value = categories[index];
-                      },
-                      children:
-                          categories
-                              .map((category) => Center(child: Text(category)))
-                              .toList(),
-                    ),
-                  ),
+                  itemExtent: 36.0,
+                  onSelectedItemChanged: (int index) {
+                    selectedCategory.value = categories[index];
+                  },
+                  children: categories
+                      .map((category) => Center(child: Text(category)))
+                      .toList(),
                 ),
-                CupertinoButton(
-                  child: const Text('Done'),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
+              ),
             ),
-          ),
+            CupertinoButton(
+              child: const Text('Done'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -12,7 +12,6 @@ Future<void> main() async {
   // await NotificationService.init();
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
