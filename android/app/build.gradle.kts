@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.s4k1l.xpensa"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
