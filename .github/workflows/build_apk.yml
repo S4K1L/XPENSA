@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 permissions:
-  contents: write  # Required to create releases
+  contents: write
 
 jobs:
   build_android:
